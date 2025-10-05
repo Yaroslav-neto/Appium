@@ -86,7 +86,6 @@ public class FirstTest {
         el3.isDisplayed();
 
 
-
         Assertions.assertEquals("123", el3.getText());
     }
 
