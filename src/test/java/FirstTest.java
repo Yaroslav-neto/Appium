@@ -16,6 +16,12 @@ public class FirstTest {
 
     private AndroidDriver driver;
 
+    enum Platform {Andoid}
+
+    ;
+    Platform platform = Platform.Andoid;
+    AppObjects appObjects;
+
     private URL getUrl() {
         try {
             return new URL("http://127.0.0.1:4723");
@@ -39,54 +45,41 @@ public class FirstTest {
         capabilities.setCapability("appium:connectHardwareKeyboard", true);
 
         driver = new AndroidDriver(getUrl(), capabilities);
+
+        appObjects = new AppObjects(driver);
     }
 
     @Test
     public void emptyStringText() {
-        var status = driver.getStatus();
-        driver.executeScript("mobile:getCurrentPackage");
-        var caps = driver.getSessionDetails();
 
-        MobileElement el1 = (MobileElement) driver.findElement(By.id("ru.netology.testing.uiautomator:id/userInput"));
-        el1.isDisplayed();
-        el1.click();
+        appObjects.inputFld.isDisplayed();
+        appObjects.inputFld.click();
 
-        el1.sendKeys("   ");
+        appObjects.inputFld.sendKeys("   ");
 
-        MobileElement el2 = (MobileElement) driver.findElement(By.id("ru.netology.testing.uiautomator:id/buttonChange"));
-        el2.isDisplayed();
-        el2.click();
+        appObjects.btnChange.isDisplayed();
+        appObjects.btnChange.click();
 
-        MobileElement el3 = (MobileElement) driver.findElement(By.id("ru.netology.testing.uiautomator:id/textToBeChanged"));
-        el2.isDisplayed();
+        appObjects.chgFld.isDisplayed();
 
-        Assertions.assertEquals("Hello UiAutomator!", el3.getText());
+        Assertions.assertEquals("Hello UiAutomator!", appObjects.chgFld.getText());
     }
 
     @Test
     public void newText() {
-        var status = driver.getStatus();
-        driver.executeScript("mobile:getCurrentPackage");
-        var caps = driver.getSessionDetails();
+        appObjects.inputFld.isDisplayed();
+        appObjects.inputFld.click();
 
-        MobileElement el1 = (MobileElement) driver.findElement(By.id("ru.netology.testing.uiautomator:id/userInput"));
-        el1.isDisplayed();
-        el1.click();
+        appObjects.inputFld.sendKeys("123");
 
-        el1.sendKeys("123");
+        appObjects.btnActiv.isDisplayed();
+        appObjects.btnActiv.click();
 
-        MobileElement el2 = (MobileElement) driver.findElement(By.id("ru.netology.testing.uiautomator:id/buttonActivity"));
-        el2.isDisplayed();
-        el2.click();
+        By textLocator = By.id(appObjects.actvFld.getAttribute("resource-id"));
+        new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.visibilityOfElementLocated(textLocator));
 
-        WebDriverWait wait = new WebDriverWait(driver, 5);
-        wait.until(ExpectedConditions.textToBe(By.id("ru.netology.testing.uiautomator:id/text"), "123"));
-
-        MobileElement el3 = (MobileElement) driver.findElement(By.id("ru.netology.testing.uiautomator:id/text"));
-        el3.isDisplayed();
-
-
-        Assertions.assertEquals("123", el3.getText());
+        Assertions.assertEquals("123", appObjects.actvFld.getText());
     }
 
     @AfterEach
